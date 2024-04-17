@@ -4,10 +4,11 @@ import seaborn as sns
 from sklearn.metrics import *
 import matplotlib.pyplot as plt
 
-def classification_report(ytrue, ypred):
+def classification_report_custom(ytrue, ypred):
     print("Confusion matrix :")
     print(confusion_matrix(ytrue,ypred))
     print("Accuracy score : {}".format(accuracy_score(ytrue,ypred)*100))
+    print("Precision score : {}".format(precision_score(ytrue,ypred, average='micro')*100))
     print("F1 score : {}".format(f1_score(ytrue, ypred, average='micro')*100))
     print("Recall score : {}".format(recall_score(ytrue, ypred, average='micro')*100))
     print("Sensitivity score : {}".format(precision_recall_fscore_support(ytrue, ypred, average='micro')[0]*100))
