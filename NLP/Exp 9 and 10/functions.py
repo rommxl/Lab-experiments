@@ -4,6 +4,11 @@ from spacy.matcher import Matcher
 import spacy
 import re
 
+def clean_text(text: str):
+    text = text.lower()
+    text = re.sub(r'[^a-zA-z0-9 ]',' ',text)
+    text = re.sub(r'\s+',' ',text)
+    return text
 
 def get_similiarity(synoptic, answer):
     sentences =[synoptic, answer]
@@ -15,11 +20,11 @@ def get_similiarity(synoptic, answer):
 
 def keyphrase_match_score(list_of_key_phrases: list[str], answer: str):
     nlp = spacy.load('en_core_web_sm')
+    answer = clean_text(answer)
     score = 0
     
     for phrase in list_of_key_phrases:
-        phrase = re.sub(r'[^a-zA-z0-9 ]',' ',phrase)
-        phrase = re.sub(r'\s+',' ',phrase)
+        phrase = clean_text(phrase)
 
         m_tool = Matcher(nlp.vocab)
 
@@ -36,9 +41,9 @@ def evaluate(evaluation: str, synoptic: list[str] | str, submitted: str, marks: 
     score_factor = None
     
     if(evaluation == 'keyword'):
-        score_factor = keyphrase_match_score(synoptic.split(','),submitted)
+        score_factor = keyphrase_match_score(synoptic,submitted)
     
     elif(evaluation == 'subjective'):
         score_factor = get_similiarity(synoptic, submitted)
 
-    return marks * score_factor
+    return f"Score is: {round(marks * score_factor,1)}/{marks}"
